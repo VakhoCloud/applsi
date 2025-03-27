@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Video - VideoShare</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="light-mode">
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <i class="fas fa-play-circle"></i>
+                <span>VideoShare</span>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search videos...">
+                <button id="searchBtn"><i class="fas fa-search"></i></button>
+            </div>
+            <div class="nav-buttons">
+                <button id="themeToggle" class="theme-toggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button id="loginBtn" class="login-btn">Login</button>
+                <button id="logoutBtn" class="logout-btn hidden">Logout</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <h3>Categories</h3>
+                <ul class="categories">
+                    <li data-category="all">All Videos</li>
+                    <li data-category="trending">Trending</li>
+                    <li data-category="music">Music</li>
+                    <li data-category="gaming">Gaming</li>
+                    <li data-category="education">Education</li>
+                </ul>
+                <h3>Library</h3>
+                <ul class="library">
+                    <li id="historyBtn"><i class="fas fa-history"></i> History</li>
+                    <li id="subscriptionsBtn"><i class="fas fa-user-friends"></i> Subscriptions</li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="upload-page">
+                <div class="section-header">
+                    <h2>Upload Video</h2>
+                </div>
+                <form id="uploadForm" class="upload-form">
+                    <div class="form-group">
+                        <label for="videoFile">Video File</label>
+                        <input type="file" id="videoFile" accept="video/*" required>
+                        <span class="error-message"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="thumbnailFile">Thumbnail</label>
+                        <input type="file" id="thumbnailFile" accept="image/*" required>
+                        <span class="error-message"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="uploadTitle">Title</label>
+                        <input type="text" id="uploadTitle" required>
+                        <span class="error-message"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="uploadDescription">Description</label>
+                        <textarea id="uploadDescription" required></textarea>
+                        <span class="error-message"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="videoCategory">Category</label>
+                        <select id="videoCategory" required>
+                            <option value="trending">Trending</option>
+                            <option value="music">Music</option>
+                            <option value="gaming">Gaming</option>
+                            <option value="education">Education</option>
+                        </select>
+                        <span class="error-message"></span>
+                    </div>
+                    <button type="submit" class="upload-btn">Upload Video</button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close-modal">&times;</button>
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login">Login</button>
+                <button class="auth-tab" data-tab="signup">Sign Up</button>
+            </div>
+            
+            <!-- Login Form -->
+            <form id="loginForm" class="auth-form active">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" required>
+                    <span class="error-message"></span>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" required>
+                    <span class="error-message"></span>
+                </div>
+                <button type="submit" class="auth-btn">Login</button>
+            </form>
+
+            <!-- Sign Up Form -->
+            <form id="signupForm" class="auth-form">
+                <div class="form-group">
+                    <label for="signupUsername">Username</label>
+                    <input type="text" id="signupUsername" required>
+                    <span class="error-message"></span>
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail">Email</label>
+                    <input type="email" id="signupEmail" required>
+                    <span class="error-message"></span>
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" required>
+                    <span class="error-message"></span>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" required>
+                    <span class="error-message"></span>
+                </div>
+                <button type="submit" class="auth-btn">Sign Up</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html> 

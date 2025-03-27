@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VideoShare - Your Video Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="light-mode">
+    <header>
+        <nav class="navbar">
+            <div class="logo" id="homeLogo" onclick="window.location.href='#'">
+                <i class="fas fa-play-circle"></i>
+                <span>VideoShare</span>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search videos...">
+                <button id="searchBtn"><i class="fas fa-search"></i></button>
+            </div>
+            <div class="nav-buttons">
+                <button id="themeToggle" class="theme-toggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button id="loginBtn" class="login-btn">Login</button>
+                <button id="logoutBtn" class="logout-btn hidden">Logout</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <h3>Categories</h3>
+                <ul class="categories">
+                    <li class="active" data-category="all">All Videos</li>
+                    <li data-category="trending">Trending</li>
+                    <li data-category="music">Music</li>
+                    <li data-category="gaming">Gaming</li>
+                    <li data-category="education">Education</li>
+                </ul>
+                <h3>Library</h3>
+                <ul class="library">
+                    <li data-page="liked">
+                        <i class="fas fa-heart"></i>
+                        <span>Liked Videos</span>
+                    </li>
+                    <li data-page="subscriptions">
+                        <i class="fas fa-user-friends"></i>
+                        <span>Subscriptions</span>
+                    </li>
+                    <li data-page="upload">
+                        <i class="fas fa-upload"></i>
+                        <span>Upload Video</span>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <!-- Home Page -->
+            <div id="homePage" class="page active">
+                <div class="section-header">
+                    <h2>All Videos</h2>
+                    <p class="section-description">Browse all available videos</p>
+                </div>
+                <div class="video-grid" id="videoGrid">
+                    <!-- Videos will be dynamically inserted here -->
+                </div>
+            </div>
+
+            <!-- Trending Page -->
+            <div id="trendingPage" class="page">
+                <div class="section-header">
+                    <h2>Trending Videos</h2>
+                    <p class="section-description">Most popular videos right now</p>
+                </div>
+                <div class="video-grid" id="trendingGrid">
+                    <!-- Trending videos will be dynamically inserted here -->
+                </div>
+            </div>
+
+            <!-- Music Page -->
+            <div id="musicPage" class="page">
+                <div class="section-header">
+                    <h2>Music Videos</h2>
+                    <p class="section-description">Latest music content</p>
+                </div>
+                <div class="video-grid" id="musicGrid">
+                    <!-- Music videos will be dynamically inserted here -->
+                </div>
+            </div>
+
+            <!-- Gaming Page -->
+            <div id="gamingPage" class="page">
+                <div class="section-header">
+                    <h2>Gaming Videos</h2>
+                    <p class="section-description">Best gaming content</p>
+                </div>
+                <div class="video-grid" id="gamingGrid">
+                    <!-- Gaming videos will be dynamically inserted here -->
+                </div>
+            </div>
+
+            <!-- Education Page -->
+            <div id="educationPage" class="page">
+                <div class="section-header">
+                    <h2>Education Videos</h2>
+                    <p class="section-description">Learn something new</p>
+                </div>
+                <div class="video-grid" id="educationGrid">
+                    <!-- Education videos will be dynamically inserted here -->
+                </div>
+            </div>
+
+            <!-- Subscriptions Page -->
+            <div id="subscriptionsPage" class="page">
+                <div class="section-header">
+                    <h2>Subscriptions</h2>
+                    <p class="section-description">Videos from channels you're subscribed to</p>
+                </div>
+                <div class="video-grid" id="subscriptionsGrid">
+                    <!-- Subscribed videos will be dynamically inserted here -->
+                </div>
+            </div>
+
+            <!-- Liked Videos Page -->
+            <div id="likedPage" class="page">
+                <div class="section-header">
+                    <h2>Liked Videos</h2>
+                    <p class="section-description">Videos you've liked</p>
+                </div>
+                <div class="video-grid" id="likedGrid">
+                    <!-- Liked videos will be dynamically inserted here -->
+                </div>
+            </div>
+
+            <!-- Upload Video Page -->
+            <div id="uploadPage" class="page">
+                <div class="section-header">
+                    <h2>Upload Video</h2>
+                    <p class="section-description">Share your content with the world</p>
+                </div>
+                <div class="upload-container">
+                    <form id="uploadForm" class="upload-form">
+                        <div class="form-group">
+                            <label for="videoTitle">Video Title</label>
+                            <input type="text" id="videoTitle" name="title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="videoDescription">Description</label>
+                            <textarea id="videoDescription" name="description" rows="4" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="videoCategory">Category</label>
+                            <select id="videoCategory" name="category" required>
+                                <option value="">Select a category</option>
+                                <option value="education">Education</option>
+                                <option value="gaming">Gaming</option>
+                                <option value="music">Music</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="videoFile">Video File</label>
+                            <input type="file" id="videoFile" name="video" accept="video/*" required>
+                            <small class="file-hint">Maximum file size: 50MB</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="thumbnailFile">Thumbnail (Optional)</label>
+                            <input type="file" id="thumbnailFile" name="thumbnail" accept="image/*">
+                            <small class="file-hint">Recommended size: 640x360 pixels</small>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="upload-btn">
+                                <i class="fas fa-upload"></i>
+                                Upload Video
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div id="videoPage" class="page">
+                <div class="video-page-container">
+                    <div class="video-main-content">
+                        <div class="video-player">
+                            <video id="videoPlayer" controls></video>
+                        </div>
+                        <div class="video-info">
+                            <h1 id="videoTitle"></h1>
+                            <div class="channel-info">
+                                <img id="channelAvatar" src="https://picsum.photos/seed/channel/50/50" alt="Channel Avatar">
+                                <div class="channel-details">
+                                    <h3 id="channelName"></h3>
+                                    <span id="subscriberCount"></span>
+                                </div>
+                                <button id="subscribeBtn" class="subscribe-btn">Subscribe</button>
+                            </div>
+                            <div class="video-stats">
+                                <div class="views-date">
+                                    <span id="videoViews"></span>
+                                    <span id="uploadDate"></span>
+                                </div>
+                                <div class="engagement-buttons">
+                                    <button id="likeBtn" class="like-btn">
+                                        <i class="fas fa-thumbs-up"></i>
+                                        <span id="likeCount">0</span>
+                                    </button>
+                                    <button id="dislikeBtn" class="dislike-btn">
+                                        <i class="fas fa-thumbs-down"></i>
+                                        <span id="dislikeCount">0</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="video-description">
+                                <p id="videoDescription"></p>
+                            </div>
+                            <div class="comments-section">
+                                <h3>Comments</h3>
+                                <div class="comment-form">
+                                    <textarea id="commentInput" placeholder="Add a comment..."></textarea>
+                                    <button id="postCommentBtn">Post</button>
+                                </div>
+                                <div id="commentsList"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="video-sidebar">
+                        <h3>Recommended Videos</h3>
+                        <div class="recommended-videos" id="recommendedVideos">
+                            <!-- Recommended videos will be dynamically added here -->
+                        </div>
+                        <button class="show-more-btn" id="showMoreBtn">
+                            <i class="fas fa-chevron-down"></i>
+                            Show More
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close-modal" id="closeAuthModal">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login">Login</button>
+                <button class="auth-tab" data-tab="signup">Sign Up</button>
+            </div>
+            
+            <!-- Login Form -->
+            <form id="loginForm" class="auth-form active">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail">
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword">
+                </div>
+                <button type="submit" class="auth-btn">Login</button>
+            </form>
+
+            <!-- Sign Up Form -->
+            <form id="signupForm" class="auth-form">
+                <div class="form-group">
+                    <label for="signupUsername">Username</label>
+                    <input type="text" id="signupUsername">
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail">Email</label>
+                    <input type="email" id="signupEmail">
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword">
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword">
+                </div>
+                <button type="submit" class="auth-btn">Sign Up</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html> 
