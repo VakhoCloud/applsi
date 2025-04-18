@@ -1,0 +1,11 @@
+name = "gemini-api-proxy"
+main = "worker.js"
+compatibility_date = "2024-03-27"
+
+[vars]
+GEMINI_API_KEY = "AIzaSyBf6ICQAxR9eA1idY3jr2lrRIBJHc76Q8Y"  # This will be replaced with a secret
+
+[[kv_namespaces]]
+binding = "CHAT_HISTORY"
+id = "chat-history"
+preview_id = "chat-history" 

@@ -1,9 +1,9 @@
 class ChatSupport {
-    constructor(apiKey) {
-        this.apiKey = apiKey;
+    constructor() {
         this.chatHistory = [];
         this.initializeElements();
         this.setupEventListeners();
+        this.createFloatingIcon();
     }
 
     initializeElements() {
@@ -12,6 +12,14 @@ class ChatSupport {
         this.sendButton = document.getElementById('sendButton');
         this.minimizeBtn = document.getElementById('minimizeBtn');
         this.chatContainer = document.getElementById('chatContainer');
+    }
+
+    createFloatingIcon() {
+        const icon = document.createElement('div');
+        icon.className = 'floating-chat-icon';
+        icon.innerHTML = '<i class="fas fa-comments"></i>';
+        icon.addEventListener('click', () => this.toggleChat());
+        document.body.appendChild(icon);
     }
 
     setupEventListeners() {
@@ -59,7 +67,7 @@ class ChatSupport {
 Current user message: ${message}`;
 
         try {
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=AIzaSyBf6ICQAxR9eA1idY3jr2lrRIBJHc76Q8Y`, {
+            const response = await fetch('https://applsi.pages.dev', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -69,16 +77,6 @@ Current user message: ${message}`;
                         parts: [{
                             text: systemPrompt
                         }]
-                    }],
-                    generationConfig: {
-                        temperature: 0.7,
-                        topK: 40,
-                        topP: 0.95,
-                        maxOutputTokens: 1024,
-                    },
-                    safetySettings: [{
-                        category: "HARM_CATEGORY_HARASSMENT",
-                        threshold: "BLOCK_MEDIUM_AND_ABOVE"
                     }]
                 })
             });
@@ -110,11 +108,13 @@ Current user message: ${message}`;
     }
 
     toggleChat() {
-        this.chatContainer.style.display = this.chatContainer.style.display === 'none' ? 'flex' : 'none';
+        const isVisible = this.chatContainer.style.display !== 'none';
+        this.chatContainer.style.display = isVisible ? 'none' : 'flex';
+        document.querySelector('.floating-chat-icon').classList.toggle('active', !isVisible);
     }
 }
 
 // Initialize chat support when the page loads
 document.addEventListener('DOMContentLoaded', () => {
-    const chatSupport = new ChatSupport('AIzaSyBf6ICQAxR9eA1idY3jr2lrRIBJHc76Q8Y'); // Replace with your actual API key
+    const chatSupport = new ChatSupport();
 }); 
