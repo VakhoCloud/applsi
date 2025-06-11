@@ -17,20 +17,40 @@ export default {
     const path = url.pathname;
 
     // Handle authentication routes
-    if (path === '/api/auth/signup' && request.method === 'POST') {
-      try {
-        const { username, email, password } = await request.json();
-        const result = await createUser(env, username, email, password);
-        
-        if (result.success) {
-          return new Response(JSON.stringify({ success: true, userId: result.userId }), {
-            headers: {
-              'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': '*',
-            },
-          });
-        } else {
-          return new Response(JSON.stringify({ success: false, error: result.error }), {
+    if (path.startsWith('/api/auth/')) {
+      if (request.method !== 'POST') {
+        return new Response(JSON.stringify({ success: false, error: 'Method not allowed' }), {
+          status: 405,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          },
+        });
+      }
+
+      if (path === '/api/auth/signup') {
+        try {
+          const { username, email, password } = await request.json();
+          const result = await createUser(env, username, email, password);
+          
+          if (result.success) {
+            return new Response(JSON.stringify({ success: true, userId: result.userId }), {
+              headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+              },
+            });
+          } else {
+            return new Response(JSON.stringify({ success: false, error: result.error }), {
+              status: 400,
+              headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+              },
+            });
+          }
+        } catch (error) {
+          return new Response(JSON.stringify({ success: false, error: 'Invalid request' }), {
             status: 400,
             headers: {
               'Content-Type': 'application/json',
@@ -38,70 +58,68 @@ export default {
             },
           });
         }
-      } catch (error) {
-        return new Response(JSON.stringify({ success: false, error: 'Invalid request' }), {
-          status: 400,
-          headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-          },
-        });
       }
-    }
 
-    if (path === '/api/auth/login' && request.method === 'POST') {
-      try {
-        const { email, password } = await request.json();
-        const user = await getUserByEmail(env, email);
-        
-        if (!user) {
-          return new Response(JSON.stringify({ success: false, error: 'User not found' }), {
-            status: 401,
+      if (path === '/api/auth/login') {
+        try {
+          const { email, password } = await request.json();
+          const user = await getUserByEmail(env, email);
+          
+          if (!user) {
+            return new Response(JSON.stringify({ success: false, error: 'User not found' }), {
+              status: 401,
+              headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+              },
+            });
+          }
+
+          const isValid = await verifyPassword(password, user.password);
+          if (!isValid) {
+            return new Response(JSON.stringify({ success: false, error: 'Invalid password' }), {
+              status: 401,
+              headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+              },
+            });
+          }
+
+          return new Response(JSON.stringify({ 
+            success: true, 
+            user: { 
+              id: user.id, 
+              username: user.username, 
+              email: user.email 
+            } 
+          }), {
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+            },
+          });
+        } catch (error) {
+          return new Response(JSON.stringify({ success: false, error: 'Invalid request' }), {
+            status: 400,
             headers: {
               'Content-Type': 'application/json',
               'Access-Control-Allow-Origin': '*',
             },
           });
         }
-
-        const isValid = await verifyPassword(password, user.password);
-        if (!isValid) {
-          return new Response(JSON.stringify({ success: false, error: 'Invalid password' }), {
-            status: 401,
-            headers: {
-              'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': '*',
-            },
-          });
-        }
-
-        return new Response(JSON.stringify({ 
-          success: true, 
-          user: { 
-            id: user.id, 
-            username: user.username, 
-            email: user.email 
-          } 
-        }), {
-          headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-          },
-        });
-      } catch (error) {
-        return new Response(JSON.stringify({ success: false, error: 'Invalid request' }), {
-          status: 400,
-          headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-          },
-        });
       }
     }
 
-    // Handle existing Gemini API routes
+    // Handle Gemini API routes
     if (request.method !== 'POST') {
-      return new Response('Method not allowed', { status: 405 });
+      return new Response(JSON.stringify({ success: false, error: 'Method not allowed' }), {
+        status: 405,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+      });
     }
 
     try {
@@ -116,7 +134,6 @@ export default {
         },
         body: JSON.stringify({
           ...body,
-          // Add any additional configuration here
           generationConfig: {
             temperature: 0.7,
             topK: 40,
@@ -142,7 +159,7 @@ export default {
       });
     } catch (error) {
       console.error('Error:', error);
-      return new Response(JSON.stringify({ error: 'Internal server error' }), {
+      return new Response(JSON.stringify({ success: false, error: 'Internal server error' }), {
         status: 500,
         headers: {
           'Content-Type': 'application/json',
