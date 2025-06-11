@@ -412,36 +412,75 @@ function switchAuthTab(tab) {
 }
 
 // Login Function
-function handleLogin(e) {
+async function handleLogin(e) {
     e.preventDefault();
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
 
-    // Simple login without validation
-    state.currentUser = {
-        email: email,
-        username: email.split('@')[0] // Use part of email as username
-    };
-    saveState();
-    updateUI();
-    hideAuthModal();
+    try {
+        const response = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+            state.currentUser = data.user;
+            saveState();
+            updateUI();
+            hideAuthModal();
+            showNotification('Successfully logged in!', 'success');
+        } else {
+            showNotification(data.error || 'Login failed', 'error');
+        }
+    } catch (error) {
+        showNotification('An error occurred during login', 'error');
+        console.error('Login error:', error);
+    }
 }
 
 // Sign Up Function
-function handleSignup(e) {
+async function handleSignup(e) {
     e.preventDefault();
     const username = document.getElementById('signupUsername').value;
     const email = document.getElementById('signupEmail').value;
     const password = document.getElementById('signupPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
 
-    // Simple signup without validation
-    state.currentUser = {
-        username: username,
-        email: email
-    };
-    saveState();
-    updateUI();
-    hideAuthModal();
+    // Validate passwords match
+    if (password !== confirmPassword) {
+        showNotification('Passwords do not match', 'error');
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/auth/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, email, password })
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+            showNotification('Account created successfully! Please log in.', 'success');
+            // Switch to login tab
+            switchAuthTab('login');
+            // Clear signup form
+            document.getElementById('signupForm').reset();
+        } else {
+            showNotification(data.error || 'Signup failed', 'error');
+        }
+    } catch (error) {
+        showNotification('An error occurred during signup', 'error');
+        console.error('Signup error:', error);
+    }
 }
 
 function logout() {
@@ -962,6 +1001,26 @@ function renderVideoPage(videoId) {
     // Reset recommended videos page and render recommended videos
     recommendedVideosPage = 1;
     renderRecommendedVideos(videoId);
+}
+
+// Show notification function
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.innerHTML = `
+        <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+        <span>${message}</span>
+    `;
+    document.body.appendChild(notification);
+    
+    // Show notification
+    setTimeout(() => notification.classList.add('show'), 100);
+    
+    // Remove notification after 3 seconds
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
 }
 
 // Initialize the application

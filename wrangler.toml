@@ -8,4 +8,9 @@ GEMINI_API_KEY = "AIzaSyBf6ICQAxR9eA1idY3jr2lrRIBJHc76Q8Y"  # This will be repla
 [[kv_namespaces]]
 binding = "CHAT_HISTORY"
 id = "chat-history"
-preview_id = "chat-history" 
+preview_id = "chat-history"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "auth-db"
+database_id = "YOUR_DATABASE_ID"  # Replace this with your actual database ID 

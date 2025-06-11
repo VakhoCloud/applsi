@@ -1,3 +1,5 @@
+import { createUser, getUserByEmail, verifyPassword } from './auth.js';
+
 export default {
   async fetch(request, env, ctx) {
     // Handle CORS
@@ -11,7 +13,93 @@ export default {
       });
     }
 
-    // Only allow POST requests
+    const url = new URL(request.url);
+    const path = url.pathname;
+
+    // Handle authentication routes
+    if (path === '/api/auth/signup' && request.method === 'POST') {
+      try {
+        const { username, email, password } = await request.json();
+        const result = await createUser(env, username, email, password);
+        
+        if (result.success) {
+          return new Response(JSON.stringify({ success: true, userId: result.userId }), {
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+            },
+          });
+        } else {
+          return new Response(JSON.stringify({ success: false, error: result.error }), {
+            status: 400,
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+            },
+          });
+        }
+      } catch (error) {
+        return new Response(JSON.stringify({ success: false, error: 'Invalid request' }), {
+          status: 400,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          },
+        });
+      }
+    }
+
+    if (path === '/api/auth/login' && request.method === 'POST') {
+      try {
+        const { email, password } = await request.json();
+        const user = await getUserByEmail(env, email);
+        
+        if (!user) {
+          return new Response(JSON.stringify({ success: false, error: 'User not found' }), {
+            status: 401,
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+            },
+          });
+        }
+
+        const isValid = await verifyPassword(password, user.password);
+        if (!isValid) {
+          return new Response(JSON.stringify({ success: false, error: 'Invalid password' }), {
+            status: 401,
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+            },
+          });
+        }
+
+        return new Response(JSON.stringify({ 
+          success: true, 
+          user: { 
+            id: user.id, 
+            username: user.username, 
+            email: user.email 
+          } 
+        }), {
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          },
+        });
+      } catch (error) {
+        return new Response(JSON.stringify({ success: false, error: 'Invalid request' }), {
+          status: 400,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          },
+        });
+      }
+    }
+
+    // Handle existing Gemini API routes
     if (request.method !== 'POST') {
       return new Response('Method not allowed', { status: 405 });
     }
