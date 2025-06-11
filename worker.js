@@ -2,14 +2,18 @@ import { createUser, getUserByEmail, verifyPassword } from './auth.js';
 
 export default {
   async fetch(request, env, ctx) {
-    // Handle CORS
+    // CORS headers that will be used in all responses
+    const corsHeaders = {
+      'Access-Control-Allow-Origin': '*',  // Allow all origins for development
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      'Access-Control-Max-Age': '86400',
+    };
+
+    // Handle CORS preflight requests
     if (request.method === 'OPTIONS') {
       return new Response(null, {
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type',
-        },
+        headers: corsHeaders,
       });
     }
 
@@ -22,8 +26,8 @@ export default {
         return new Response(JSON.stringify({ success: false, error: 'Method not allowed' }), {
           status: 405,
           headers: {
+            ...corsHeaders,
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
           },
         });
       }
@@ -36,16 +40,16 @@ export default {
           if (result.success) {
             return new Response(JSON.stringify({ success: true, userId: result.userId }), {
               headers: {
+                ...corsHeaders,
                 'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
               },
             });
           } else {
             return new Response(JSON.stringify({ success: false, error: result.error }), {
               status: 400,
               headers: {
+                ...corsHeaders,
                 'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
               },
             });
           }
@@ -53,8 +57,8 @@ export default {
           return new Response(JSON.stringify({ success: false, error: 'Invalid request' }), {
             status: 400,
             headers: {
+              ...corsHeaders,
               'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': '*',
             },
           });
         }
@@ -69,8 +73,8 @@ export default {
             return new Response(JSON.stringify({ success: false, error: 'User not found' }), {
               status: 401,
               headers: {
+                ...corsHeaders,
                 'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
               },
             });
           }
@@ -80,8 +84,8 @@ export default {
             return new Response(JSON.stringify({ success: false, error: 'Invalid password' }), {
               status: 401,
               headers: {
+                ...corsHeaders,
                 'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
               },
             });
           }
@@ -95,16 +99,16 @@ export default {
             } 
           }), {
             headers: {
+              ...corsHeaders,
               'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': '*',
             },
           });
         } catch (error) {
           return new Response(JSON.stringify({ success: false, error: 'Invalid request' }), {
             status: 400,
             headers: {
+              ...corsHeaders,
               'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': '*',
             },
           });
         }
@@ -116,8 +120,8 @@ export default {
       return new Response(JSON.stringify({ success: false, error: 'Method not allowed' }), {
         status: 405,
         headers: {
+          ...corsHeaders,
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
         },
       });
     }
@@ -153,8 +157,8 @@ export default {
       // Return the response with CORS headers
       return new Response(JSON.stringify(data), {
         headers: {
+          ...corsHeaders,
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
         },
       });
     } catch (error) {
@@ -162,8 +166,8 @@ export default {
       return new Response(JSON.stringify({ success: false, error: 'Internal server error' }), {
         status: 500,
         headers: {
+          ...corsHeaders,
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
         },
       });
     }
