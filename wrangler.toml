@@ -12,5 +12,5 @@ preview_id = "chat-history"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "auth-db"
+database_name = "videoshare-db"
 database_id = "YOUR_DATABASE_ID"  # Replace this with your actual database ID 
