@@ -12,7 +12,7 @@ let state = {
 };
 
 // Set your deployed Worker URL here
-const WORKER_URL = 'https://gemini-api-proxy.YOUR_SUBDOMAIN.workers.dev'; // TODO: Replace with your actual Worker URL
+const WORKER_URL = 'https://wild-art-b451.vaxo-gr2.workers.dev';
 
 // Load state from localStorage
 function loadState() {

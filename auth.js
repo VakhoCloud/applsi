@@ -1,3 +1,6 @@
+
+
+
 // Authentication helper functions
 export async function createUser(env, username, email, password) {
     try {
