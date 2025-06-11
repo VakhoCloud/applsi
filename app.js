@@ -11,6 +11,9 @@ let state = {
     theme: 'light'
 };
 
+// Set your deployed Worker URL here
+const WORKER_URL = 'https://gemini-api-proxy.YOUR_SUBDOMAIN.workers.dev'; // TODO: Replace with your actual Worker URL
+
 // Load state from localStorage
 function loadState() {
     console.log('Loading state...');
@@ -418,7 +421,7 @@ async function handleLogin(e) {
     const password = document.getElementById('loginPassword').value;
 
     try {
-        const response = await fetch('/api/auth/login', {
+        const response = await fetch(`${WORKER_URL}/api/auth/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -458,7 +461,7 @@ async function handleSignup(e) {
     }
 
     try {
-        const response = await fetch('/api/auth/signup', {
+        const response = await fetch(`${WORKER_URL}/api/auth/signup`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
