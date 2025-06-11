@@ -20,10 +20,24 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
 
+    console.log('Request:', {
+      method: request.method,
+      path: path,
+      url: request.url
+    });
+
     // Handle authentication routes
     if (path.startsWith('/api/auth/')) {
+      console.log('Handling auth route:', path);
+      
       if (request.method !== 'POST') {
-        return new Response(JSON.stringify({ success: false, error: 'Method not allowed' }), {
+        console.log('Method not allowed:', request.method);
+        return new Response(JSON.stringify({ 
+          success: false, 
+          error: 'Method not allowed',
+          method: request.method,
+          path: path
+        }), {
           status: 405,
           headers: {
             ...corsHeaders,
@@ -35,6 +49,7 @@ export default {
       if (path === '/api/auth/signup') {
         try {
           const { username, email, password } = await request.json();
+          console.log('Signup attempt:', { username, email });
           const result = await createUser(env, username, email, password);
           
           if (result.success) {
@@ -54,6 +69,7 @@ export default {
             });
           }
         } catch (error) {
+          console.error('Signup error:', error);
           return new Response(JSON.stringify({ success: false, error: 'Invalid request' }), {
             status: 400,
             headers: {
@@ -67,6 +83,7 @@ export default {
       if (path === '/api/auth/login') {
         try {
           const { email, password } = await request.json();
+          console.log('Login attempt:', { email });
           const user = await getUserByEmail(env, email);
           
           if (!user) {
@@ -104,6 +121,7 @@ export default {
             },
           });
         } catch (error) {
+          console.error('Login error:', error);
           return new Response(JSON.stringify({ success: false, error: 'Invalid request' }), {
             status: 400,
             headers: {
