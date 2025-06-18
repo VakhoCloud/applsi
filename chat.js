@@ -4,7 +4,12 @@ class ChatSupport {
         this.initializeElements();
         this.setupEventListeners();
         this.createFloatingIcon();
-        this.API_KEY = process.env.GEMINI_API_KEY; // Get API key from environment variable
+        
+        if (!config || !config.GEMINI_API_KEY || config.GEMINI_API_KEY === 'AIzaSyBf6ICQAxR9eA1idY3jr2lrRIBJHc76Q8Y') {
+            console.error('Please set your Gemini API key in config.js');
+            this.addMessage('Error: API key not configured. Please contact support.', 'bot');
+            return;
+        }
     }
 
     initializeElements() {
@@ -68,7 +73,7 @@ class ChatSupport {
 Current user message: ${message}`;
 
         try {
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${this.API_KEY}`, {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${config.GEMINI_API_KEY}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -83,8 +88,15 @@ Current user message: ${message}`;
             });
 
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(`API Error: ${errorData.error?.message || 'Unknown error'}`);
+                const errorText = await response.text();
+                let errorMessage;
+                try {
+                    const errorData = JSON.parse(errorText);
+                    errorMessage = errorData.error?.message || 'Unknown error';
+                } catch (e) {
+                    errorMessage = errorText || 'Unknown error';
+                }
+                throw new Error(`API Error: ${errorMessage}`);
             }
 
             const data = await response.json();
