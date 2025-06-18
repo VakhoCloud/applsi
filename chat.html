@@ -106,9 +106,13 @@
         </div>
     </div>
 
-    <!-- Load config first -->
-    <script src="config.js"></script>
-    <!-- Then load chat.js -->
-    <script src="chat.js" defer></script>
+    <!-- Configuration -->
+    <script>
+        window.config = {
+            GEMINI_API_KEY: 'AIzaSyBf6ICQAxR9eA1idY3jr2lrRIBJHc76Q8Y'
+        };
+    </script>
+    <!-- Chat implementation -->
+    <script src="chat.js"></script>
 </body>
 </html> 

@@ -1,7 +1,7 @@
 class ChatSupport {
     constructor() {
-        if (typeof config === 'undefined') {
-            console.error('Config not loaded. Please ensure config.js is loaded before chat.js');
+        if (typeof window.config === 'undefined') {
+            console.error('Config not loaded. Please ensure config is defined before chat.js');
             return;
         }
 
@@ -10,8 +10,8 @@ class ChatSupport {
         this.setupEventListeners();
         this.createFloatingIcon();
         
-        if (!config.GEMINI_API_KEY) {
-            console.error('Please set your Gemini API key in config.js');
+        if (!window.config.GEMINI_API_KEY) {
+            console.error('Please set your Gemini API key in the config');
             this.addMessage('Error: API key not configured. Please contact support.', 'bot');
             return;
         }
@@ -78,7 +78,7 @@ class ChatSupport {
 Current user message: ${message}`;
 
         try {
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${config.GEMINI_API_KEY}`, {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${window.config.GEMINI_API_KEY}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -134,8 +134,8 @@ Current user message: ${message}`;
 
 // Initialize chat support when the page loads and config is available
 document.addEventListener('DOMContentLoaded', () => {
-    if (typeof config === 'undefined') {
-        console.error('Config not loaded. Please ensure config.js is loaded before chat.js');
+    if (typeof window.config === 'undefined') {
+        console.error('Config not loaded. Please ensure config is defined before chat.js');
         return;
     }
     const chatSupport = new ChatSupport();
