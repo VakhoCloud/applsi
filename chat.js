@@ -1,11 +1,16 @@
 class ChatSupport {
     constructor() {
+        if (typeof config === 'undefined') {
+            console.error('Config not loaded. Please ensure config.js is loaded before chat.js');
+            return;
+        }
+
         this.chatHistory = [];
         this.initializeElements();
         this.setupEventListeners();
         this.createFloatingIcon();
         
-        if (!config || !config.GEMINI_API_KEY || config.GEMINI_API_KEY === 'AIzaSyBf6ICQAxR9eA1idY3jr2lrRIBJHc76Q8Y') {
+        if (!config.GEMINI_API_KEY) {
             console.error('Please set your Gemini API key in config.js');
             this.addMessage('Error: API key not configured. Please contact support.', 'bot');
             return;
@@ -127,7 +132,11 @@ Current user message: ${message}`;
     }
 }
 
-// Initialize chat support when the page loads
+// Initialize chat support when the page loads and config is available
 document.addEventListener('DOMContentLoaded', () => {
+    if (typeof config === 'undefined') {
+        console.error('Config not loaded. Please ensure config.js is loaded before chat.js');
+        return;
+    }
     const chatSupport = new ChatSupport();
 }); 
