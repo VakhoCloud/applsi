@@ -145,6 +145,25 @@ export default {
       }
     }
 
+    // Add new endpoint for getting the API key
+    if (path === '/api/get-key') {
+        // Only allow requests from your domain
+        const origin = request.headers.get('Origin');
+        if (origin !== 'https://applsi.pages.dev') {
+            return new Response('Unauthorized', { status: 401 });
+        }
+
+        // Return the API key with proper CORS headers
+        return new Response(JSON.stringify({ key: env.GEMINI_API_KEY }), {
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': 'https://applsi.pages.dev',
+                'Access-Control-Allow-Methods': 'GET',
+                'Access-Control-Allow-Headers': 'Content-Type'
+            }
+        });
+    }
+
     // Handle Gemini API routes
     if (request.method !== 'POST') {
       return new Response(JSON.stringify({ success: false, error: 'Method not allowed' }), {

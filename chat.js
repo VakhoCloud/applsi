@@ -9,11 +9,21 @@ class ChatSupport {
         this.initializeElements();
         this.setupEventListeners();
         this.createFloatingIcon();
-        
-        if (!window.config.GEMINI_API_KEY) {
-            console.error('Please set your Gemini API key in the config');
-            this.addMessage('Error: API key not configured. Please contact support.', 'bot');
-            return;
+        this.apiKey = null;
+        this.initializeApiKey();
+    }
+
+    async initializeApiKey() {
+        try {
+            const response = await fetch(`${window.config.API_ENDPOINT}/get-key`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch API key');
+            }
+            const data = await response.json();
+            this.apiKey = data.key;
+        } catch (error) {
+            console.error('Error fetching API key:', error);
+            this.addMessage('Error: Unable to initialize chat. Please try again later.', 'bot');
         }
     }
 
@@ -60,6 +70,10 @@ class ChatSupport {
     }
 
     async getGeminiResponse(message) {
+        if (!this.apiKey) {
+            throw new Error('API key not initialized');
+        }
+
         const systemPrompt = `You are a helpful and friendly customer support agent for VideoShare, a video sharing platform. Your role is to assist users with their questions and concerns. Follow these guidelines:
 
 1. Be professional, polite, and empathetic
@@ -78,7 +92,7 @@ class ChatSupport {
 Current user message: ${message}`;
 
         try {
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${window.config.GEMINI_API_KEY}`, {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${this.apiKey}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
