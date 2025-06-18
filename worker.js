@@ -87,7 +87,10 @@ export default {
           const user = await getUserByEmail(env, email);
           
           if (!user) {
-            return new Response(JSON.stringify({ success: false, error: 'User not found' }), {
+            return new Response(JSON.stringify({ 
+              success: false, 
+              error: 'User not found' 
+            }), {
               status: 401,
               headers: {
                 ...corsHeaders,
@@ -98,7 +101,10 @@ export default {
 
           const isValid = await verifyPassword(password, user.password);
           if (!isValid) {
-            return new Response(JSON.stringify({ success: false, error: 'Invalid password' }), {
+            return new Response(JSON.stringify({ 
+              success: false, 
+              error: 'Invalid password' 
+            }), {
               status: 401,
               headers: {
                 ...corsHeaders,
@@ -107,14 +113,17 @@ export default {
             });
           }
 
+          // Successful login
           return new Response(JSON.stringify({ 
-            success: true, 
+            success: true,
+            message: 'Login successful',
             user: { 
               id: user.id, 
               username: user.username, 
               email: user.email 
             } 
           }), {
+            status: 200,
             headers: {
               ...corsHeaders,
               'Content-Type': 'application/json',
@@ -122,7 +131,10 @@ export default {
           });
         } catch (error) {
           console.error('Login error:', error);
-          return new Response(JSON.stringify({ success: false, error: 'Invalid request' }), {
+          return new Response(JSON.stringify({ 
+            success: false, 
+            error: 'Invalid request' 
+          }), {
             status: 400,
             headers: {
               ...corsHeaders,

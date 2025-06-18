@@ -430,19 +430,32 @@ async function handleLogin(e) {
         });
 
         const data = await response.json();
-        
-        if (data.success) {
+        console.log('Login response:', data);
+
+        if (data.success === true) {
+            // Login successful
             state.currentUser = data.user;
             saveState();
             updateUI();
-            hideAuthModal();
-            showNotification('Successfully logged in!', 'success');
-        } else {
-            showNotification(data.error || 'Login failed', 'error');
+            
+            // Reset the login form
+            document.getElementById('loginForm').reset();
+            
+            // Hide the modal
+            const authModal = document.getElementById('authModal');
+            authModal.classList.remove('modal');
+            authModal.classList.add('hidden');
+            document.body.style.overflow = '';
+            
+            showNotification('Authorized successfully!', 'success');
+            return;
         }
+
+        // Login failed
+        showNotification(data.error || 'Login failed', 'error');
     } catch (error) {
-        showNotification('An error occurred during login', 'error');
         console.error('Login error:', error);
+        showNotification('An error occurred during login', 'error');
     }
 }
 

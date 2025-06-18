@@ -4,6 +4,7 @@ class ChatSupport {
         this.initializeElements();
         this.setupEventListeners();
         this.createFloatingIcon();
+        this.API_KEY = process.env.GEMINI_API_KEY; // Get API key from environment variable
     }
 
     initializeElements() {
@@ -67,7 +68,7 @@ class ChatSupport {
 Current user message: ${message}`;
 
         try {
-            const response = await fetch('https://applsi.pages.dev', {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${this.API_KEY}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
